@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pl" ng-app="IndexCardApp">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ucz się angielskiego w każdej wolnej chwili. Sprawdź się w grze, w której otrzymujesz punkty za język angielski!</title>
+    <meta name="author" content="Zbigniew Stasiak" />
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Audiowide|Cinzel:400,700|Dosis|Gentium+Book+Basic&amp;subset=latin-ext" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="header">
+        <h1>Fiszki</h1>
+        <h3>Aplikacja do nauki języka Angielskiego</h3>
+    </div>
+    <div class="pattern">
+        <div class="container">
+            
+            <div class="navbar navbar-default my-navbar" role="navigation" ng-controller="navCtrl as nav">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation-bar">
+                            <span class="sr-only">Toggle  Navigation</span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#" ng-click="nav.indexCenter.home();">
+                            <img id="brand-image" alt="Website Logo" src="img/pol_uk_flag.jpg" />
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse navigation-bar" id="navigation-bar">
+                        <p>Wybierz interesującą Cię opcje</p>
+                        <ul class="nav navbar-nav">
+                            <li><button class="btn btn-md btn-info mm" ng-click="nav.indexCenter.activateCards();" id="fiszki">Fiszki</button></li>
+                            <li><button class="btn btn-md btn-info mm"  ng-click="nav.indexCenter. activateWordBase();" id="baza_slowek">Baza słówek</button></li>
+                            <li><button class="btn btn-md btn-info mm"  ng-click="nav.indexCenter.activateGame();" id="gra">Gra</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div> <!-- navbar -->
+            
+            <div ng-controller="welcomeCtrl as welcome" ng-hide="welcome.indexCenter.welcomeActive" class="robocza">
+                <h2>Cześć!</h2>
+                <h3>To jest strona poświęcona nauce języka angielskiego!</h3>
+                <p>Zajrzyj do bazy zawierającej wszystkie słówka ze strony, ucz się codziennie innego słówka korzystając z fiszek lub weź udział w grze, sprawdź swoje umiejętności i zbieraj punkty!</p>
+                <div class="row">
+                    <div class="col-md-4 card bb"><a href="#" ng-click="welcome.indexCenter.activateCards();"><p>Pokaż fiszki</p></a></div>
+                    <div class="col-md-4 brain bb"><a href="#" ng-click="welcome.indexCenter.activateWordBase();"><p>Przejdź do bazy słówek</p></a></div>
+                    <div class="col-md-4 play bb"><a href="#" ng-click="welcome.indexCenter.activateGame();"><p>Zagraj w grę</p></a></div>
+                </div>
+            </div> <!-- Welcome controller -->
+            
+            <div ng-controller="indexCardCtrl as card" ng-show="card.indexCenter.cardsActive">
+                <h3>Ucz się angielskiego w każdej chwili! Poprostu... weź kolejną fiszkę!</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="well well-sm">
+                                <p>Wybierz kategorie słówek: </p>
+                                <select name="kategorie">
+                                    <option value="Dowolna">Dowolna</option>
+                                    <option value="IT">IT</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Smaltalk">Smaltalk</option>
+                                </select>
+                            </div>
+                            <div class="well well-sm">
+                                <p>Wybierz wariant wyświetlania fiszek: </p>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default dropdown-toggle btn-lg" data-toggle="dropdown">
+                                        Wyświetlanie: <span class="caret"></span>
+                                    </button>
+
+                                    <ul class="dropdown-menu">
+                                        <li><button class="btn btn-default" ng-click="card.plAndEn();">PL - EN</button></li>
+                                        <li><button class="btn btn-default" ng-click="card.enAndPl();">EN - PL</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                    <div class="col-md-6">
+                        <div class="well well-md">
+                            <div class="thumbnail" ng-class="{'show-that': card.polishEnglish, 'hide-that': card.englishPolish}">
+                                <span ng-repeat="words in card.data" ng-if="card.activeCard === $index">{{$index+1+": "}}</span>
+                                <span id="first_word" ng-repeat="words in card.data" ng-if="card.activeCard === $index">{{words.polishWord}}</span>
+                                <span>&mdash;</span>
+                                <span id="second-word" ng-repeat="words in card.data" ng-if="card.activeCard === $index">{{words.englishWord}}</span>
+                            </div>
+                            <div class="thumbnail"  ng-class="{'show-that': card.englishPolish, 'hide-that': card.polishEnglish}">
+                                <span ng-repeat="words in card.data" ng-if="card.activeCard === $index">{{$index+1+": "}}</span>
+                                <span id="first_word" ng-repeat="words in card.data" ng-if="card.activeCard === $index">{{words.englishWord}}</span>
+                                <span>&mdash;</span>
+                                <span id="second-word" ng-repeat="words in card.data" ng-if="card.activeCard === $index">{{words.polishWord}}</span>
+                            </div>
+                            <div class="row">
+                                <ul class="pagination pagination-md">
+                                    <li><button class="btn btn-default bt-lg" ng-click="card.setPreviousCard();"><span aria-hidden="true">&laquo;</span></button></li>
+                                    <li><button class="btn btn-default bt-lg" ng-click="card.setRandomCard();"><span aria-hidden="true">Losuj fiszkę</span></button></li>
+                                    <li><button class="btn btn-default bt-lg" ng-click="card.setNextCard();"><span aria-hidden="true">&raquo;</span></button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Index Controller - cards -->
+            
+            <div ng-controller="indexCardCtrl as card" ng-show="card.indexCenter.wordBaseActive">
+              <div class="row">
+                  
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h2 class="panel-title">
+                                    Baza Słówek w języku polskim i angielskim
+                                </h2>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item col-sm-4 base-field" ng-repeat="words in card.data"><span>{{$index+1+": "}}</span><span>{{words.englishWord}}</span><span>&mdash;</span><span>{{words.polishWord}}</span></li>
+                                </ul>
+                            </div>
+                            <div class="panel-footer">
+                                Przyjemnej nauki (Zmienic na stopkę)
+                            </div>
+                        </div>
+                </div>
+            </div> <!-- index controller - words base -->
+            
+            <div ng-controller="gameCtrl as game" ng-show="game.indexCenter.gameActive">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 zasady-gry">
+                        <h2>Zasady gry:</h2>
+                        <p>1. Wylosuj dla siebie słówko, wciskając przycisk "Wylosuj kartę"</p>
+                        <p>2. W polu opisanym "Angielskie słówko" wpisz tłumaczenie wylosowanego słówka</p>
+                        <p>3. Kliknij przycisk "Sprawdź", aby zweryfikować Twoje tłumaczenie</p>
+                        <p>4. W przypadku prawidłowej odpowiedzi pole z wpisanym słowkiem zmieni kolor na zielony, a Ty otrzymasz 1 punkt</p>
+                        <p>5. W przypadku nieprawidłowej odpowiedzi, pole z wpisanym słówkiem zaświeci się na czerwono, pojawi się pod nim prawidłowa odpowiedź i zostanie Tobie odjęty 1 punkt</p>
+                        <p>6. Po sprawdzeniu swojego rezultatu, wylosuj kolejne słówko</p>
+                        <p>7. Zbierz jak najwięcej punktów!</p>
+                        <p>8. Za screena z wynikiem większym lub równym 300 punktów wysyłam prezent - dowcip ^^</p>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="game-field">   
+                            <span id="index-src" ng-repeat="words in game.data" ng-if="game.activeCard === $index">
+                                {{$index+1+": "}}
+                            </span>
+                            <span ng-repeat="words in game.data" ng-if="game.activeCard === $index">{{words.polishWord}}</span>
+                            <span>&mdash;</span>
+                            <input type="text" placeholder="Angielskie słówko" id="user-answer" ng-class="{'correct-ans': game.correctAnswer, 'incorrect-ans': game.incorrectAnswer}" />
+                            <span ng-repeat="words in game.data" ng-if="game.activeCard === $index">
+                                <br />
+                                <button class="btn btn-info my-button btn-lg" type="button" role="button" ng-click="game.setRandomPlayCard();">
+                                    Wylosuj kartę!
+                                </button> 
+                                <button class="btn btn-primary my-button btn-lg" type="button" role="button" ng-click="game.playCardGame($index);" ng-class="{'button-hide': game.correctAnswer || game.incorrectAnswer}">
+                                    Sprawdź!
+                                </button><br/>
+                                <p ng-show="game.incorrectAnswer">Prawidłowa odpowiedź to: <span>{{words.englishWord}}</span></p>
+                                <br />
+                                <div class="alert alert-danger" ng-show="game.gameError">
+                                    Błąd! Wpisz odpowiedź w polu "Angielskie słówko"!
+                                    <button class="close" ng-click="game.gameError=false">
+                                        &times;
+                                    </button>
+                                </div>
+                            </span>
+                        </div> 
+                        
+                        
+                    </div>
+                    <div class="col-md-6 wynik-box">
+                        <div>
+                            <span>PUNKTY:</span>
+                            <div id="wynik" class="wynik-gry"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                      
+                        
+                    </div>    
+                </div>
+            </div> 
+            
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script src="js/controlers/indexCard.js"></script>
+    <script src="js/controlers/welcome.js"></script>
+    <script src="js/controlers/game.js"></script>
+    <script src="js/controlers/nav.js"></script>
+    <script src="js/factories/dataService.js"></script>
+    <script src="js/factories/indexCenter.js"></script>
+</body>
+</html>
